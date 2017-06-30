@@ -138,13 +138,13 @@ static int efm32x_get_prod_rev(struct flash_bank *bank, uint8_t *prev)
 	return target_read_u8(bank->target, EFM32_MSC_DI_PROD_REV, prev);
 }
 
-static int efm32x_read_reg_u32(struct flash_bank *bank, target_addr_t address,
+static int efm32x_read_reg_u32(struct flash_bank *bank, target_addr_t offset,
 			       uint32_t *value)
 {
 	struct efm32x_flash_bank *efm32x_info = bank->driver_priv;
 	uint32_t base = efm32x_info->reg_base;
 
-	return target_read_u32(bank->target, base + address, value);
+	return target_read_u32(bank->target, base + offset, value);
 }
 
 static int efm32x_write_reg_u32(struct flash_bank *bank, target_addr_t address,
