@@ -98,7 +98,7 @@ struct efm32x_flash_bank {
 	int probed;
 	uint32_t lb_page[LOCKBITS_PAGE_SZ/4];
 	uint32_t reg_base;
-	uint8_t reg_lock;
+	uint32_t reg_lock;
 };
 
 struct efm32_info {
