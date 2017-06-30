@@ -639,10 +639,6 @@ static int efm32x_write_block(struct flash_bank *bank, const uint8_t *buf,
 	struct efm32x_flash_bank *efm32x_info = bank->driver_priv;
 	int ret = ERROR_OK;
 
-	/* str     r6, [r0, #EFM32_MSC_LOCK_OFFSET] */
-	static const uint8_t efr_lock_str_r6[] = {0x06, 0x64};
-	static const uint8_t efm_lock_str_r6[] = {0xc6, 0x63};
-
 	/* see contrib/loaders/flash/efm32.S for src */
 	static uint8_t efm32x_flash_write_code[] = {
 		/* #define EFM32_MSC_WRITECTRL_OFFSET      0x008 */
@@ -650,10 +646,7 @@ static int efm32x_write_block(struct flash_bank *bank, const uint8_t *buf,
 		/* #define EFM32_MSC_ADDRB_OFFSET          0x010 */
 		/* #define EFM32_MSC_WDATA_OFFSET          0x018 */
 		/* #define EFM32_MSC_STATUS_OFFSET         0x01c */
-		/* #define EFM32_MSC_LOCK_OFFSET           0x03c */
 
-			0x15, 0x4e,    /* ldr     r6, =#0x1b71 */
-			0, 0,          /* fill with: str r6, [r0, #EFM32_MSC_LOCK_OFFSET] */
 			0x01, 0x26,    /* movs    r6, #1 */
 			0x86, 0x60,    /* str     r6, [r0, #EFM32_MSC_WRITECTRL_OFFSET] */
 
@@ -712,16 +705,8 @@ static int efm32x_write_block(struct flash_bank *bank, const uint8_t *buf,
 		/* exit: */
 			0x30, 0x46,    /* mov     r0, r6 */
 			0x00, 0xbe,    /* bkpt    #0 */
-
-		/* LOCKKEY */
-			0x71, 0x1b, 0x00, 0x00
 	};
 
-	/* patch the above bin blob for different LOCK reg offsets */
-	if (efm32x_info->reg_lock == EFM32_MSC_REG_LOCK)
-		memcpy(efm32x_flash_write_code + 2, efm_lock_str_r6, 2);
-	else
-		memcpy(efm32x_flash_write_code + 2, efr_lock_str_r6, 2);
 
 	/* flash write code */
 	if (target_alloc_working_area(target, sizeof(efm32x_flash_write_code),
