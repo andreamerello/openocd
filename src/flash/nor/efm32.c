@@ -203,8 +203,10 @@ static int efm32x_read_info(struct flash_bank *bank,
 	if (EFR_FAMILY_ID_BLUE_GECKO == efm32_info->part_family ||
 	    EFR_FAMILY_ID_MIGHTY_GECKO == efm32_info->part_family) {
 		efm32x_info->reg_base = EFR32_MSC_REGBASE;
+		efm32x_info->reg_lock = EFR32_MSC_REG_LOCK;
 	} else {
 		efm32x_info->reg_base = EFM32_MSC_REGBASE;
+		efm32x_info->reg_lock = EFM32_MSC_REG_LOCK;
 	}
 
 	if (EFM_FAMILY_ID_GECKO == efm32_info->part_family ||
